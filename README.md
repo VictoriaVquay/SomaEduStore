@@ -14,6 +14,7 @@ Dependence on online-only apps or platforms
 A simple mobile app that lets users download and access free learning materials offline:
 Once downloaded, materials stay on the device — so learners don’t need constant internet.
 
+
 🧩 Core features (MVP):
 
 ✅ Browse subjects and topics
@@ -38,16 +39,18 @@ Focuses on youth and women, closing the digital divide
 Simple, clean interface suitable even for first-time smartphone users
 
 
+
 🚀 Impact:
 Supports self-paced learning
 
 Helps women and youth develop digital literacy skills
 
 Bridges educational access gaps in rural or low-connectivity areas
+
 ======>>> Download once, learn forever.
 
 
-SOMAEDUSTRE is a dedicated training program focused on bridging the digital divide for youth and women. Through hands-on training in digital literacy, we empower learners to confidently use technology in their everyday lives, pursue further education, and access economic opportunities. The program cover essential topics such as computer basics, internet navigation, online safety, digital communication tools, and introductory coding — all designed to meet the unique needs of underserved communities.
+SOMAEDUSTORE is a dedicated training program focused on bridging the digital divide for youth and women. Through hands-on training in digital literacy, we empower learners to confidently use technology in their everyday lives, pursue further education, and access economic opportunities. The program cover essential topics such as computer basics, internet navigation, online safety, digital communication tools, and introductory coding — all designed to meet the unique needs of underserved communities.
 By creating a supportive and inclusive learning environment, SomaEduStore helps participants gain market-relevant skills, build self-confidence, and become active contributors in the digital age.
 
 ✅ Project goal (MVP):
