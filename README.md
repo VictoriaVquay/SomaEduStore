@@ -16,10 +16,12 @@ Once downloaded, materials stay on the device — so learners don’t need const
 
 🧩 Core features (MVP):
 
-✅ Browse subjects & topics
+✅ Browse subjects and topics
 
 ✅ Download files (textbooks, videos, quizzes)
+
 ✅ Open and view files offline anytime
+
 ✅ User-friendly, lightweight design
 
 (Later search, bookmarks, upload own materials, share content)
@@ -50,15 +52,19 @@ By creating a supportive and inclusive learning environment, SomaEduStore helps 
 
 ✅ Project goal (MVP):
 A simple app where users can:
+
 1️⃣ View a list of subjects
+
 2️⃣ See downloadable files in each subject (PDFs, videos, quizzes)
+
 3️⃣ Download files to device and open offline
+
 
  Build simple Flutter UI
 Home screen: list of subjects
 
 Materials screen: list of files
 
-Button to download & open each file
+Button to download and open each file
 
 
