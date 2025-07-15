@@ -15,7 +15,9 @@ A simple mobile app that lets users download and access free learning materials 
 Once downloaded, materials stay on the device — so learners don’t need constant internet.
 
 🧩 Core features (MVP):
+
 ✅ Browse subjects & topics
+
 ✅ Download files (textbooks, videos, quizzes)
 ✅ Open and view files offline anytime
 ✅ User-friendly, lightweight design
