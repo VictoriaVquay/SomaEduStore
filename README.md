@@ -22,10 +22,12 @@ Once downloaded, materials stay on the device — so learners don’t need const
 
 (Later search, bookmarks, upload own materials, share content)
 
+
+
 🏆 Unique value:
 Works without internet after download
 
-Uses existing open content → low cost to build & maintain
+Uses existing open content → low cost to build and maintain
 
 Focuses on youth and women, closing the digital divide
 
