@@ -1,62 +1,104 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'quiz_screen.dart'; // Make sure this file exists
+import 'package:path_provider/path_provider.dart';
+import 'package:dio/dio.dart';
+import 'package:open_file/open_file.dart';
+import 'quiz_screen.dart';
 
-class MaterialsScreen extends StatelessWidget {
+class MaterialsScreen extends StatefulWidget {
   final Map<String, dynamic> subject;
+  final Map<String, String> urls;
 
-  MaterialsScreen({super.key, required this.subject});
+  const MaterialsScreen({super.key, required this.subject, required this.urls});
 
-  final Map<String, String> urls = {
-    'Computer Basics PDF': 'https://able2work.org/wp-content/uploads/2014/08/Basic_Digital_Literacy_Course.pdf',
-    'Intro Video': 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
-    'Quiz 1': 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
-    'Safety Guide PDF': 'https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20Guide%20for%20Small%20Businesses_508c.pdf',
-    'Safety Tips Video': 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
-    'Email Basics PDF': 'https://edu.gcfglobal.org/en/internetbasics/what-is-email/1/',
-    'Messaging Apps Video': 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
-  };
+  @override
+  State<MaterialsScreen> createState() => _MaterialsScreenState();
+}
 
-  void _openMaterial(BuildContext context, String title, String type) async {
-    if (type == 'quiz') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const QuizScreen()),
-      );
-    } else {
-      final url = urls[title];
-      if (url != null && await canLaunchUrl(Uri.parse(url))) {
-        await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Opening $title...')),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not open $title')),
-        );
-      }
+class _MaterialsScreenState extends State<MaterialsScreen> {
+  late final Directory _cacheDir;
+
+  @override
+  void initState() {
+    super.initState();
+    _prepareCacheDir();
+  }
+
+  Future<void> _prepareCacheDir() async {
+    _cacheDir = await getApplicationDocumentsDirectory();
+  }
+
+  Icon _getIcon(String type) {
+    switch (type) {
+      case 'pdf':
+        return const Icon(Icons.picture_as_pdf, color: Colors.red);
+      case 'video':
+        return const Icon(Icons.video_library, color: Colors.deepPurple);
+      case 'quiz':
+        return const Icon(Icons.quiz, color: Colors.teal);
+      default:
+        return const Icon(Icons.insert_drive_file);
     }
+  }
+
+  Future<void> _openMaterial(String title, String type) async {
+    final url = widget.urls[title];
+
+    if (type == 'quiz') {
+      Navigator.push(context, MaterialPageRoute(builder: (_) => const QuizScreen()));
+      return;
+    }
+
+    if (url == null) {
+      _showMessage("No URL found for $title");
+      return;
+    }
+
+    final filename = url.split('/').last;
+    final filePath = "${_cacheDir.path}/$filename";
+    final file = File(filePath);
+
+    try {
+      if (!await file.exists()) {
+        _showMessage("Downloading $title...");
+        final response = await Dio().download(url, filePath);
+        if (response.statusCode != 200) {
+          _showMessage("Failed to download $title");
+          return;
+        }
+      }
+
+      await OpenFile.open(file.path);
+    } catch (e) {
+      _showMessage("Error opening $title: $e");
+    }
+  }
+
+  void _showMessage(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 
   @override
   Widget build(BuildContext context) {
-    final List<dynamic> materials = subject['materials'];
+    final materials = widget.subject['materials'] as List;
 
     return Scaffold(
-      appBar: AppBar(title: Text(subject['name'])),
+      appBar: AppBar(title: Text(widget.subject['name'])),
       body: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: materials.length,
         itemBuilder: (context, index) {
           final material = materials[index];
+          final title = material['title'];
+          final type = material['type'];
+
           return Card(
+            margin: const EdgeInsets.symmetric(vertical: 8),
             child: ListTile(
-              title: Text(material['title']),
-              subtitle: Text('Type: ${material['type']}'),
-              trailing: ElevatedButton(
-                onPressed: () => _openMaterial(context, material['title'], material['type']),
-                child: Text(material['type'] == 'quiz' ? 'Start' : 'Open'),
-              ),
+              leading: _getIcon(type),
+              title: Text(title),
+              subtitle: Text("Tap to open (offline supported)"),
+              onTap: () => _openMaterial(title, type),
             ),
           );
         },

@@ -147,7 +147,8 @@ class MaterialsScreen extends StatelessWidget {
         await dio.download(url, filePath);
       }
 
-      await OpenFile.open(filePath);
+      //await OpenFile.open(filePath);
+       await OpenFile.open(filePath);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error downloading/opening file: $e')),

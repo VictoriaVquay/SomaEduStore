@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'materials_screen.dart';
 
 class SubjectsScreen extends StatelessWidget {
-  const SubjectsScreen({super.key});
+  SubjectsScreen({super.key});
 
-  final List<Map<String, dynamic>> subjects = const [
+  // Sample data (replace with Supabase or API response later)
+  final List<Map<String, dynamic>> subjects = [
     {
-      'name': 'Digital Literacy',
+      'name': 'Computer Basics',
       'materials': [
         {'title': 'Computer Basics PDF', 'type': 'pdf'},
         {'title': 'Intro Video', 'type': 'video'},
@@ -14,7 +15,7 @@ class SubjectsScreen extends StatelessWidget {
       ],
     },
     {
-      'name': 'Internet Safety',
+      'name': 'Online Safety',
       'materials': [
         {'title': 'Safety Guide PDF', 'type': 'pdf'},
         {'title': 'Safety Tips Video', 'type': 'video'},
@@ -29,46 +30,51 @@ class SubjectsScreen extends StatelessWidget {
     },
   ];
 
-   final urls = {
-      // Digital Literacy
-      'Computer Basics PDF':
-          'https://able2work.org/wp-content/uploads/2014/08/Basic_Digital_Literacy_Course.pdf', // Basic digital literacy PDF
-      'Intro Video':
-          'https://www.youtube.com/watch?v=Qc8RJdTJpX4&list=PL3bOBGhOIybBdhkGQbHn-W-sYudXVLuVn', // LearnFree intro to computers
-      'Quiz 1':
-          'https://www.proprofs.com/quiz-school/story.php?title=NTc3OTU0', // External online quiz
-      // Internet Safety
-      'Safety Guide PDF':
-          'https://www.kaspersky.com/resource-center/preemptive-safety/top-10-preemptive-safety-rules-and-what-not-to-do-online',
-      'Safety Tips Video':
-          'https://www.youtube.com/watch?v=aO858HyFbKI', // Internet safety tips video
-      // Communication Tools
-      'Email Basics PDF':
-          'https://www.ncccofoundation.org/wp-content/uploads/2025/04/Email-Basics-NCCCO-Foundation-Computer-Literacy.pdf', // Email basics PDF
-      'Messaging Apps Video':
-          'https://www.youtube.com/watch?v=ELioaGg4WOY', // How messaging apps work
-    };
-
+  final Map<String, String> materialUrls = {
+    'Computer Basics PDF':
+        'https://able2work.org/wp-content/uploads/2014/08/Basic_Digital_Literacy_Course.pdf',
+    'Intro Video':
+        'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
+    'Quiz 1':
+        'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+    'Safety Guide PDF':
+        'https://www.cisa.gov/sites/default/files/publications/Cybersecurity%20Guide%20for%20Small%20Businesses_508c.pdf',
+    'Safety Tips Video':
+        'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
+    'Email Basics PDF': 'https://file-examples.com/wp-content/uploads/2017/10/file-sample_150kB.pdf',
+    'Messaging Apps Video':
+        'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
+  };
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Subjects')),
+      appBar: AppBar(
+        title: const Text('Subjects'),
+        centerTitle: true,
+      ),
       body: ListView.builder(
-        padding: const EdgeInsets.all(16),
         itemCount: subjects.length,
+        padding: const EdgeInsets.all(16),
         itemBuilder: (context, index) {
           final subject = subjects[index];
           return Card(
-            margin: const EdgeInsets.symmetric(vertical: 8),
+            elevation: 2,
+            margin: const EdgeInsets.symmetric(vertical: 10),
             child: ListTile(
-              title: Text(subject['name']),
-              trailing: const Icon(Icons.arrow_forward),
+              title: Text(
+                subject['name'],
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => MaterialsScreen(subject: subject),
+                    builder: (_) => MaterialsScreen(
+                      subject: subject,
+                      urls: materialUrls,
+                    ),
                   ),
                 );
               },
