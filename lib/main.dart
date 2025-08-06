@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:open_file/open_file.dart';
+import 'package:url_launcher/url_launcher.dart'; // Add this import
+import 'package:flutter/foundation.dart'; // Add this import
 import 'dart:io';
 
 /// SomaEduStore: A simple educational app for digital literacy, internet safety, and communication tools.
@@ -99,31 +101,24 @@ class MaterialsScreen extends StatelessWidget {
     required this.materials,
   });
 
+  static const Map<String, String> urls = {
+    'Computer Basics PDF':
+        'https://able2work.org/wp-content/uploads/2014/08/Basic_Digital_Literacy_Course.pdf',
+    'Intro Video': 'https://www.youtube.com/watch?v=Qc8RJdTJpX4',
+    'Quiz 1': 'https://www.proprofs.com/quiz-school/story.php?title=NTc3OTU0',
+    'Safety Guide PDF':
+        'https://www.kaspersky.com/resource-center/preemptive-safety/top-10-preemptive-safety-rules-and-what-not-to-do-online',
+    'Safety Tips Video': 'https://www.youtube.com/watch?v=aO858HyFbKI',
+    'Email Basics PDF':
+        'https://www.ncccofoundation.org/wp-content/uploads/2025/04/Email-Basics-NCCCO-Foundation-Computer-Literacy.pdf',
+    'Messaging Apps Video': 'https://www.youtube.com/watch?v=ELioaGg4WOY',
+  };
+
   Future<void> downloadAndOpen(
     BuildContext context,
     String title,
     String type,
   ) async {
-    final urls = {
-      // Digital Literacy
-      'Computer Basics PDF':
-          'https://able2work.org/wp-content/uploads/2014/08/Basic_Digital_Literacy_Course.pdf', // Basic digital literacy PDF
-      'Intro Video':
-          'https://www.youtube.com/watch?v=Qc8RJdTJpX4&list=PL3bOBGhOIybBdhkGQbHn-W-sYudXVLuVn', // LearnFree intro to computers
-      'Quiz 1':
-          'https://www.proprofs.com/quiz-school/story.php?title=NTc3OTU0', // External online quiz
-      // Internet Safety
-      'Safety Guide PDF':
-          'https://www.kaspersky.com/resource-center/preemptive-safety/top-10-preemptive-safety-rules-and-what-not-to-do-online',
-      'Safety Tips Video':
-          'https://www.youtube.com/watch?v=aO858HyFbKI', // Internet safety tips video
-      // Communication Tools
-      'Email Basics PDF':
-          'https://www.ncccofoundation.org/wp-content/uploads/2025/04/Email-Basics-NCCCO-Foundation-Computer-Literacy.pdf', // Email basics PDF
-      'Messaging Apps Video':
-          'https://www.youtube.com/watch?v=ELioaGg4WOY', // How messaging apps work
-    };
-
     final url = urls[title] ?? '';
     if (url.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -132,14 +127,28 @@ class MaterialsScreen extends StatelessWidget {
       return;
     }
 
+    // Always open in browser on web
+    if (kIsWeb ||
+        url.contains('youtube.com') ||
+        url.contains('proprofs.com') ||
+        url.contains('kaspersky.com')) {
+      final uri = Uri.parse(url);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Could not launch URL.')));
+      }
+      return;
+    }
+
+    // Otherwise, download and open (PDFs)
     try {
       final dir = await getApplicationDocumentsDirectory();
-      final filePath =
-          '${dir.path}/$title.${type == 'pdf'
-              ? 'pdf'
-              : type == 'video'
-              ? 'mp4'
-              : 'pdf'}';
+      final ext = type == 'pdf' ? 'pdf' : 'file';
+      final safeTitle = title.replaceAll(RegExp(r'[^\w\s]+'), '_');
+      final filePath = '${dir.path}/$safeTitle.$ext';
       final file = File(filePath);
 
       if (!await file.exists()) {
@@ -147,8 +156,7 @@ class MaterialsScreen extends StatelessWidget {
         await dio.download(url, filePath);
       }
 
-      //await OpenFile.open(filePath);
-       await OpenFile.open(filePath);
+      await OpenFile.open(filePath);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error downloading/opening file: $e')),

@@ -7,7 +7,11 @@ Limited or expensive internet connectivity
 
 Lack of organized, free materials in one place
 
+<<<<<<< HEAD
 >>>>>>> 36d4e607cc92b32bee4e97ab115d5f3230eeb7bd
+=======
+>>>>>>> 36d4e60 (Update README.md)
+>>>>>>> b31bb38 (SomaEduStore Project Finalizing)
 Dependence on online-only apps or platforms
 
 
