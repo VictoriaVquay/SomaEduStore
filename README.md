@@ -1,19 +1,6 @@
 # SomaEduStore
 Empowering Youth and Women through Digital Literacy.
 
-<<<<<<< HEAD
-Many youth and women, especially in underserved areas, struggle to access quality educational resources due to:
-
-Limited or expensive internet connectivity
-
-Lack of organized, free materials in one place
-
-=======
-
-
-# SomaEduStore
-Empowering Youth and Women through Digital Literacy.
-
 Many youth and women, especially in underserved areas, struggle to access quality educational resources due to:
 
 Limited or expensive internet connectivity
