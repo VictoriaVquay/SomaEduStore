@@ -1,3 +1,4 @@
+// Updated main.dart for SomaEduStore by Victoria 0n 13th August 2025
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
