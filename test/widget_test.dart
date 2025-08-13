@@ -11,8 +11,9 @@ import 'package:somaedustore/main.dart'; // Make sure this matches your app's pa
 
 void main() {
   testWidgets('App builds without crashing', (WidgetTester tester) async {
-    await tester.pumpWidget(const SomaEduStoreApp()); // 🔁 Use your actual main app widget name here
+    await tester.pumpWidget(
+      const SomaEduStoreApp(themeMode: ThemeMode.light),
+    ); // 🔁 Use your actual main app widget name here
     expect(find.byType(MaterialApp), findsOneWidget);
   });
 }
-

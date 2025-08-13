@@ -5,17 +5,44 @@ import 'package:dio/dio.dart';
 import 'package:open_file/open_file.dart';
 import 'quiz_screen.dart';
 
-class MaterialsScreen extends StatefulWidget {
-  final Map<String, dynamic> subject;
+class MaterialsScreen extends StatelessWidget {
+  final String subject;
+  final List materials;
   final Map<String, String> urls;
 
-  const MaterialsScreen({super.key, required this.subject, required this.urls});
+  const MaterialsScreen({
+    super.key,
+    required this.subject,
+    required this.materials,
+    required this.urls,
+  });
 
   @override
-  State<MaterialsScreen> createState() => _MaterialsScreenState();
+  Widget build(BuildContext context) {
+    return _MaterialsScreenState(
+      subject: subject,
+      materials: materials,
+      urls: urls,
+    );
+  }
 }
 
-class _MaterialsScreenState extends State<MaterialsScreen> {
+class _MaterialsScreenState extends StatefulWidget {
+  final String subject;
+  final List materials;
+  final Map<String, String> urls;
+
+  const _MaterialsScreenState({
+    required this.subject,
+    required this.materials,
+    required this.urls,
+  });
+
+  @override
+  State<_MaterialsScreenState> createState() => _MaterialsScreenStateState();
+}
+
+class _MaterialsScreenStateState extends State<_MaterialsScreenState> {
   late final Directory _cacheDir;
 
   @override
@@ -45,7 +72,10 @@ class _MaterialsScreenState extends State<MaterialsScreen> {
     final url = widget.urls[title];
 
     if (type == 'quiz') {
-      Navigator.push(context, MaterialPageRoute(builder: (_) => const QuizScreen()));
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const QuizScreen()),
+      );
       return;
     }
 
@@ -80,10 +110,10 @@ class _MaterialsScreenState extends State<MaterialsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final materials = widget.subject['materials'] as List;
+    final materials = widget.materials;
 
     return Scaffold(
-      appBar: AppBar(title: Text(widget.subject['name'])),
+      appBar: AppBar(title: Text(widget.subject)),
       body: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: materials.length,
@@ -91,15 +121,38 @@ class _MaterialsScreenState extends State<MaterialsScreen> {
           final material = materials[index];
           final title = material['title'];
           final type = material['type'];
+          final url = widget.urls[title];
+          final filename = url != null ? url.split('/').last : '';
+          final filePath = "${_cacheDir.path}/$filename";
+          final file = File(filePath);
 
-          return Card(
-            margin: const EdgeInsets.symmetric(vertical: 8),
-            child: ListTile(
-              leading: _getIcon(type),
-              title: Text(title),
-              subtitle: Text("Tap to open (offline supported)"),
-              onTap: () => _openMaterial(title, type),
-            ),
+          return FutureBuilder<bool>(
+            future: file.exists(),
+            builder: (context, snapshot) {
+              final downloaded = snapshot.data ?? false;
+              return Card(
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                child: ListTile(
+                  leading: _getIcon(type),
+                  title: Text(title),
+                  subtitle: Text(
+                    downloaded
+                        ? "Available offline"
+                        : "Tap to download and open",
+                    style: TextStyle(
+                      color: downloaded ? Colors.green : Colors.grey,
+                    ),
+                  ),
+                  trailing: downloaded
+                      ? const Icon(Icons.check_circle, color: Colors.green)
+                      : IconButton(
+                          icon: const Icon(Icons.download),
+                          onPressed: () => _openMaterial(title, type),
+                        ),
+                  onTap: () => _openMaterial(title, type),
+                ),
+              );
+            },
           );
         },
       ),
